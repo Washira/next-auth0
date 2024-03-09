@@ -3,6 +3,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 - [Getting Started](#getting-started)
 - [Learn More](#learn-more)
 - [Deploy on Vercel](#deploy-on-vercel)
+- [Auth0 Workflow](#auth0-workflow)
 - [Auth0 Configuration](#auth0-configuration)
 - [Configure SDK](#configure-sdk)
 - [Auth0 APIs](#auth0-apis)
@@ -46,6 +47,24 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+## Auth0 Workflow
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Auth0
+    participant Application
+
+    User->>Application: Request to access protected resource
+    Application->>User: Redirect to Auth0 login page
+    User->>Auth0: Enter login credentials
+    Auth0-->>User: Verify login credentials
+    User-->>Auth0: Confirm login
+    Auth0-->>Application: Provide authentication token
+    Application->>Application: Validate token
+    Application-->>User: Grant access to resource
+```
 
 ## Auth0 Configuration
 

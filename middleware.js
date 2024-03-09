@@ -4,13 +4,15 @@ import {
   getSession,
 } from '@auth0/nextjs-auth0/edge'
 
-export default middleware(async (req) => {
-  return withMiddlewareAuthRequired(async (req) => {
-    const res = NextResponse.next()
-    const user = await getSession(req, res)
-    if (!user) {
-      return NextResponse.redirect('/api/auth/login')
-    }
-    return res
-  })
+export default withMiddlewareAuthRequired(async (req) => {
+  const res = NextResponse.next()
+  const user = await getSession(req, res)
+  if (!user) {
+    return NextResponse.redirect('/api/auth/login')
+  }
+  return res
 })
+
+export const config = {
+  matcher: '/profile',
+}
