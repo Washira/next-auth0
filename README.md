@@ -9,6 +9,8 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 - [การใช้งาน](#การใช้งาน)
 - [ตั้งค่าใน Auth0 dashboard settings](#ตั้งค่าใน-auth0-dashboard-settings)
 - [User Management](#user-management)
+- [Profile page](#profile-page)
+  - [Redirecting to the profile page](#redirecting-to-the-profile-page)
 
 ## Getting Started
 
@@ -123,3 +125,62 @@ export default function RootLayout({ children }) {
 เมื่อมีการ login เข้ามา เราสามารถดูคนที่ login ได้ โดยเข้าไปดูที่ dashboard > User Management > Users
 
 จะเห็นหน้่ารายชื่อของคนที่ login เข้ามาทั้งหมด
+
+## Profile page
+
+เราสามารถดึงข้อมูลของผู้ใช้ที่ login เข้ามาได้ 
+
+ถ้าดึงข้อมูลแบบ Server-side ให้ใข้ `useUser` จาก `@auth0/nextjs-auth0`
+
+```javascript
+import { getSession } from '@auth0/nextjs-auth0';
+
+export default async function ProfileServer() {
+  const { user } = await getSession();
+
+  return (
+      user && (
+          <div>
+            <img src={user.picture} alt={user.name} />
+            <h2>{user.name}</h2>
+            <p>{user.email}</p>
+          </div>
+      )
+  );
+}
+```
+
+ถ้าต้องการ ดึง แบบ Client-side ให้ใช้ `useUser` จาก `@auth0/nextjs-auth0/client`
+
+```javascript
+'use client';
+
+import { useUser } from '@auth0/nextjs-auth0/client';
+
+export default function ProfileClient() {
+  const { user, error, isLoading } = useUser();
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>{error.message}</div>;
+
+  return (
+    user && (
+      <div>
+        <img src={user.picture} alt={user.name} />
+        <h2>{user.name}</h2>
+        <p>{user.email}</p>
+      </div>
+    )
+  );
+}
+```
+
+เราจะสามารถดึงข้อมูลมาแสดงได้เหมือนกับเรียก API `GET /api/auth/me`
+
+### Redirecting to the profile page
+
+เราสามารถทำการ redirect ไปที่ หลังจาก login แล้ว ให้ไปที่ profile page ได้ และถ้าไม่ได้ login ก็ให้ไปที่หน้า login แทน
+โดยใช้ middleware
+
+```javascript
+```
