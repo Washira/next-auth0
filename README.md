@@ -180,7 +180,7 @@ export default function ProfileClient() {
 ### Redirecting to the profile page
 
 เราสามารถทำการ redirect ไปที่ หลังจาก login แล้ว ให้ไปที่ profile page ได้ และถ้าไม่ได้ login ก็ให้ไปที่หน้า login แทน
-โดยใช้ middleware
+โดยใช้ `middleware.js`
 
 ```javascript
 ```
