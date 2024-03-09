@@ -152,10 +152,11 @@ export default function RootLayout({ children }) {
 ถ้าดึงข้อมูลแบบ Server-side ให้ใข้ `useUser` จาก `@auth0/nextjs-auth0`
 
 ```javascript
-import { getSession } from '@auth0/nextjs-auth0';
+// app/profile/page.js
+import { getSession } from '@auth0/nextjs-auth0'
 
 export default async function ProfileServer() {
-  const { user } = await getSession();
+  const { user } = await getSession()
 
   return (
       user && (
@@ -165,22 +166,23 @@ export default async function ProfileServer() {
             <p>{user.email}</p>
           </div>
       )
-  );
+  )
 }
 ```
 
 ถ้าต้องการ ดึง แบบ Client-side ให้ใช้ `useUser` จาก `@auth0/nextjs-auth0/client`
 
 ```javascript
-'use client';
+// app/profile/page.js
+'use client'
 
-import { useUser } from '@auth0/nextjs-auth0/client';
+import { useUser } from '@auth0/nextjs-auth0/client'
 
 export default function ProfileClient() {
-  const { user, error, isLoading } = useUser();
+  const { user, error, isLoading } = useUser()
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>{error.message}</div>;
+  if (isLoading) return <div>Loading...</div>
+  if (error) return <div>{error.message}</div>
 
   return (
     user && (
@@ -190,7 +192,7 @@ export default function ProfileClient() {
         <p>{user.email}</p>
       </div>
     )
-  );
+  )
 }
 ```
 
@@ -202,4 +204,34 @@ export default function ProfileClient() {
 โดยใช้ `middleware.js`
 
 ```javascript
+import { NextResponse } from 'next/server'
+import {
+  withMiddlewareAuthRequired,
+  getSession,
+} from '@auth0/nextjs-auth0/edge'
+
+export default withMiddlewareAuthRequired(async (req) => {
+  const res = NextResponse.next()
+  const user = await getSession(req, res)
+  if (!user) {
+    return NextResponse.redirect('/api/auth/login')
+  }
+  return res
+})
+
+export const config = {
+  matcher: '/profile',
+}
+```
+
+และเพิ่ม `haddleLogin` ใน `app/api/auth/[auth0]/route.js`
+
+```javascript
+import { handleAuth, handleLogin } from '@auth0/nextjs-auth0'
+
+export const GET = handleAuth({
+  login: handleLogin({
+    returnTo: '/profile',
+  }),
+})
 ```
