@@ -7,6 +7,8 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 - [Configure SDK](#configure-sdk)
 - [Auth0 APIs](#auth0-apis)
 - [การใช้งาน](#การใช้งาน)
+- [ตั้งค่าใน Auth0 dashboard settings](#ตั้งค่าใน-auth0-dashboard-settings)
+- [User Management](#user-management)
 
 ## Getting Started
 
@@ -92,3 +94,32 @@ export default function RootLayout({ children }) {
 }
 ```
 
+จากนั้น นำเอา `<a href="/api/auth/login">Login</a>` ไปเพิ่มใน `app/page.js` เพื่อให้ไปหน้า login
+
+แต่ยังไม่สามารถ login ได้เพราะยังไม่ได้ตั้งค่าใน Auth0 ให้เรียบร้อย
+
+## ตั้งค่าใน Auth0 dashboard settings
+
+เข้าไปที่ dashboard > Applications > Applications > เลือก application ที่เราสร้างขึ้นมา > Settings
+
+1. ไปที่ [Auth0 Dashboard](https://manage.auth0.com/dashboard)
+2. ไปที่ `Applications` แล้วสร้าง Application ใหม่
+3. ตั้งค่า `Allowed Callback URLs` เป็น path ที่เราต้องการให้ redirect เมื่อกด login เช่น `http://localhost:3000/api/auth/callback`
+4. ตั้งค่า `Allowed Web Origins` ให้ตรงกับที่เราใช้งาน เช่น `http://localhost:3000`
+5. ตั้งค่า `Allowed Origins (CORS)` ให้ตรงกับที่เราใช้งาน เช่น `http://localhost:3000`
+6. ตั้งค่า `Application URIs` ให้ตรงกับที่เราใช้งาน เช่น `http://localhost:3000`
+7. ตั้งค่า `Token Endpoint Authentication Method` ให้เป็น `Post`
+8. ตั้งค่า `Use Auth0 instead of the IdP to do Single Sign On` ให้เป็น `True`
+9.  ตั้งค่า `OIDC Conformant` ให้เป็น `True`
+10. ตั้งค่า `Application Type` ให้เป็น `Regular Web Application`
+11. ตั้งค่า `Allowed Logout URLs` ให้เป็น path ที่เราต้องการให้ redirect หลังจาก logout แล้ว เช่น `http://localhost:3000`
+
+จากนั้น กด `Save Changes`
+
+เมื่อทำการตั้งค่าเรียบร้อยแล้ว ก็สามารถ login ได้แล้ว
+
+## User Management
+
+เมื่อมีการ login เข้ามา เราสามารถดูคนที่ login ได้ โดยเข้าไปดูที่ dashboard > User Management > Users
+
+จะเห็นหน้่ารายชื่อของคนที่ login เข้ามาทั้งหมด
