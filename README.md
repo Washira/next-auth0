@@ -12,6 +12,11 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 - [User Management](#user-management)
 - [Profile page](#profile-page)
   - [Redirecting to the profile page](#redirecting-to-the-profile-page)
+- [RBAC (Role-Based Access Control)](#rbac-role-based-access-control)
+  - [การสร้าง API](#การสร้าง-api)
+  - [สร้าง Permission](#สร้าง-permission)
+  - [เพิ่ม Permission ให้กับ User](#เพิ่ม-permission-ให้กับ-user)
+  - [กำหนด audience ให้กับ API](#กำหนด-audience-ให้กับ-api)
 
 ## Getting Started
 
@@ -235,3 +240,46 @@ export const GET = handleAuth({
   }),
 })
 ```
+
+## RBAC (Role-Based Access Control)
+
+การสร้าง Permission โดยแบ่งตาม Role ใน Auth0 และให้สิทธิ์ในการเข้าถึง API ต่าง ๆ
+
+### การสร้าง API
+
+1. ไปที่ dashboard > APIs > APIs
+2. กด `Create API`
+3. กรอกข้อมูลดังนี้
+   - Name: ชื่อ API
+   - Identifier: ชื่อ API ที่เราต้องการให้มี ในที่นี้เราให้เป็น `http://localhost:3000`
+   - Signing Algorithm: ให้เลือก `RS256`
+  แล้วกด `Create`
+
+### สร้าง Permission
+
+1. ไปที่ dashboard > APIs > APIs
+2. เลือก API ที่เราสร้างขึ้นมา
+3. ไปที่ `Permissions` แล้วกด `Create Permission`
+4. กรอกข้อมูลดังนี้
+   - Name: ชื่อ Permission
+   - Description: คำอธิบายของ Permission
+ - แล้วกด `add`
+
+สามารถสร้าง permission ได้หลาย ๆ อัน
+
+จากนั้นไปที่ `settings` แล้วเลือก `RBAC` แล้วกด enable `Enable RBAC` และ `Add Permissions in the Access Token` แล้วกด `Save`
+
+### เพิ่ม Permission ให้กับ User
+
+1. ไปที่ dashboard > User Management > Users
+2. เลือก User ที่เราต้องการให้มี Permission
+3. ไปที่ `Permissions` แล้วกด `Add Permissions`
+4. ให้เลือก API ที่เราสร้างขึ้นมา
+5. ให้เลือก Permission ที่เราสร้างขึ้นมา
+6. แล้วกด `Add Permissions`
+
+### กำหนด audience ให้กับ API
+
+เราต้องการให้ API ที่เราสร้างขึ้นมา รู้ว่าเราต้องการให้มีการเข้าถึง Permission ที่เราสร้างขึ้นมา ดังนั้นเราต้องกำหนด audience ให้กับ API ด้วย
+
+`audience` คือ ชื่อ API ที่เราสร้างขึ้นมา เช่น `http://localhost:3000`
