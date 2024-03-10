@@ -280,6 +280,22 @@ export const GET = handleAuth({
 
 ### กำหนด audience ให้กับ API
 
-เราต้องการให้ API ที่เราสร้างขึ้นมา รู้ว่าเราต้องการให้มีการเข้าถึง Permission ที่เราสร้างขึ้นมา ดังนั้นเราต้องกำหนด audience ให้กับ API ด้วย
+เราต้องการให้ API ที่เราสร้างขึ้นมา รู้ว่าเราต้องการให้มีการเข้าถึง Permission ที่เราสร้างขึ้นมา ดังนั้นเราต้องกำหนด `audience` ให้กับ API ด้วย
 
 `audience` คือ ชื่อ API ที่เราสร้างขึ้นมา เช่น `http://localhost:3000`
+
+ส่วนของ Next.js ที่เราต้องการให้มีการเข้าถึง Permission ที่เราสร้างขึ้นมา ต้องกำหนด `audience` ให้กับ API ด้วย
+
+```javascript
+// app/api/auth/[auth0]/route.js
+import { handleAuth, handleLogin } from '@auth0/nextjs-auth0'
+
+export const GET = handleAuth({
+  login: handleLogin({
++    authorizationParams: {
++      audience: "localhost:3000",
++    },
+    returnTo: '/profile',
+  }),
+})
+```
