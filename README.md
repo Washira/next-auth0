@@ -273,7 +273,7 @@ export const GET = handleAuth({
 
 1. ไปที่ dashboard > User Management > Users
 2. เลือก User ที่เราต้องการให้มี Permission
-3. ไปที่ `Permissions` แล้วกด `Add Permissions`
+3. ไปที่ `Permissions` แล้วกด `Assign Permissions`
 4. ให้เลือก API ที่เราสร้างขึ้นมา
 5. ให้เลือก Permission ที่เราสร้างขึ้นมา
 6. แล้วกด `Add Permissions`
@@ -293,9 +293,10 @@ import { handleAuth, handleLogin } from '@auth0/nextjs-auth0'
 export const GET = handleAuth({
   login: handleLogin({
 +    authorizationParams: {
-+      audience: "localhost:3000",
++      audience: "http://localhost:3000",
 +    },
     returnTo: '/profile',
   }),
 })
 ```
+

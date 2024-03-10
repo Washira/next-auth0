@@ -10,6 +10,7 @@ export default withMiddlewareAuthRequired(async (req) => {
   if (!user) {
     return NextResponse.redirect('/api/auth/login')
   }
+  // console.log('user', user.accessToken)
   return res
 })
 
