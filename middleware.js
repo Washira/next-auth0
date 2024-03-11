@@ -3,6 +3,7 @@ import {
   withMiddlewareAuthRequired,
   getSession,
 } from '@auth0/nextjs-auth0/edge'
+import { jwtDecode } from 'jwt-decode'
 
 export default withMiddlewareAuthRequired(async (req) => {
   const res = NextResponse.next()
@@ -11,6 +12,8 @@ export default withMiddlewareAuthRequired(async (req) => {
     return NextResponse.redirect('/api/auth/login')
   }
   // console.log('user', user.accessToken)
+  const userPermissionData = jwtDecode(user.accessToken)
+  console.log('userPermissionData', userPermissionData)
   return res
 })
 

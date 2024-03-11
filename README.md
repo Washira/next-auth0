@@ -17,6 +17,10 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
   - [สร้าง Permission](#สร้าง-permission)
   - [เพิ่ม Permission ให้กับ User](#เพิ่ม-permission-ให้กับ-user)
   - [กำหนด audience ให้กับ API](#กำหนด-audience-ให้กับ-api)
+  - [JWT Decode](#jwt-decode)
+  - [สร้าง Role](#สร้าง-role)
+  - [สรุป](#สรุป)
+- [Flow](#flow)
 
 ## Getting Started
 
@@ -300,3 +304,110 @@ export const GET = handleAuth({
 })
 ```
 
+### JWT Decode
+
+ติดตั้ง `jwt-decode` เพื่อใช้ในการ decode token ที่ได้จาก Auth0
+
+```bash
+npm install jwt-decode
+```
+
+จากนั้นเราสามารถดึงข้อมูลของ token ที่ได้จาก Auth0 ได้ และดูว่ามี Permission อะไรบ้าง
+
+```javascript
+// middleware.js
+
+...
+const user = await getSession(req, res)
+...
+
+const userPermissionData = jwtDecode(user.accessToken)
+console.log(userPermissionData)
+
+...
+```
+
+เราจะเห็นว่ามีข้อมูลของ Permission ที่เราสร้างขึ้นมา
+
+```bash
+userPermissionData {
+  iss: '...',
+  sub: '...',
+  aud: [ 'http://localhost:3000', '...' ],
+  iat: 1710172049,
+  exp: 1710258449,
+  azp: '...',
+  scope: 'openid profile email',
+  permissions: [ 'read:next-auth-test' ]
+}
+```
+
+สังเกตว่า `userPermissionData` ที่เราสร้างขึ้นมา มี `scope` และ `permissions` 
+
+`scope` คือ ข้อมูลของ User ที่ application สามารถดึงข้อมูลมาใช้ได้ ซึ่งปกติจะมี `openid profile email` ที่ผ่านการขออนุญาตจาก User แล้ว
+
+ส่วน `permissions` คือ สิทธิ์ที่เราสามารถทำได้ ใน application ใดๆ
+
+เราสามารถเพิ่ม `scope` ด้วย `permissions` ได้ เพิ่มสิทธิ์ให้กับ user ใน application นั้น ๆ เช่น `read:next-auth-test`
+
+```javascript
+// app/api/auth/[auth0]/route.js
+import { handleAuth, handleLogin } from '@auth0/nextjs-auth0'
+
+export const GET = handleAuth({
+  login: handleLogin({
+    authorizationParams: {
+      audience: "http://localhost:3000",
++      scope: "openid profile email read:next-auth-test"
+    },
+    returnTo: '/profile',
+  }),
+})
+```
+
+เมื่อ login อีกที เราจะเจอส่วนของการขออนุญาตใช้ `scope` นี้เพิ่มขึ้นมา
+
+ทีนี้ เราจะได้ `scope` เป็น `openid profile email read:next-auth-test` แล้ว
+
+```bash
+userPermissionData {
+  iss: '...',
+  sub: '...',
+  aud: [ 'http://localhost:3000', '...' ],
+  iat: 1710172049,
+  exp: 1710258449,
+  azp: '...',
+  scope: 'openid profile email read:next-auth-test',
+  permissions: [ 'read:next-auth-test' ]
+}
+```
+
+### สร้าง Role
+
+เราสามารถสร้าง Role ให้กับ User ได้ และกำหนด Permission ให้กับ Role นั้น ๆ
+
+1. ไปที่ dashboard > User Management > Roles
+2. กด `Create Role`
+3. กรอกข้อมูลดังนี้
+   - Name: ชื่อ Role
+   - Description: คำอธิบายของ Role
+   - แล้วกด `Create`
+4. กด `Add Permissions` > เลือก API ที่เราสร้างขึ้นมา > เลือก Permission ที่มี
+5. กด `Add Users` เพื่อกำหนด User ที่เราต้องการให้มี Role นี้ แล้วกด `Save`
+6. เข้าไปดูใน User ที่เรากำหนด Role ไว้ จะเห็นว่ามี Role ที่เรากำหนดไว้ และมี Permission ที่เรากำหนดใน Role เพิ่มมาด้วย
+
+### สรุป
+
+เราสามารถกำหนดสิทธิ์ให้กับ User ได้ โดยการกำหนด Permission ให้กับ User โดยตรง หรือกำหนด Permission ให้กับ Role แล้วกำหนด Role ให้กับ User ได้ เราเรียก Role ว่า เป็นการ group permissions ไว้ด้วยกัน
+
+## Flow
+
+Flow คือ การแทรกการทำงานระหว่างกลางของ application และ Auth0 โดยเราสามารถทำได้หลายอย่าง เช่น
+
+- Login Flow - การทำงานเมื่อมีการ login
+- Machine to Machine Flow - การทำงานก่อน token issued เสร็จ
+- Pre User Registration Flow - การทำงานก่อนมีการลงทะเบียน
+- Post User Registration Flow - การทำงานเมื่อมีการลงทะเบียน
+- Post Change Password Flow - การทำงานเมื่อมีการเปลี่ยนรหัสผ่าน
+- Send Phone Message Flow - การทำงานก่อนการส่งข้อความไปยังโทรศัพท์
+- Password Reset / Post Challenge Flow - การทำงานเมื่อมีการเปลี่ยนรหัสผ่านหลังจากที่ทำการ reset password
