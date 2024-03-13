@@ -404,10 +404,10 @@ userPermissionData {
 
 Flow คือ การแทรกการทำงานระหว่างกลางของ application และ Auth0 โดยเราสามารถทำได้หลายอย่าง เช่น
 
-- Login Flow - การทำงานเมื่อมีการ login
-- Machine to Machine Flow - การทำงานก่อน token issued เสร็จ
-- Pre User Registration Flow - การทำงานก่อนมีการลงทะเบียน
-- Post User Registration Flow - การทำงานเมื่อมีการลงทะเบียน
-- Post Change Password Flow - การทำงานเมื่อมีการเปลี่ยนรหัสผ่าน
-- Send Phone Message Flow - การทำงานก่อนการส่งข้อความไปยังโทรศัพท์
-- Password Reset / Post Challenge Flow - การทำงานเมื่อมีการเปลี่ยนรหัสผ่านหลังจากที่ทำการ reset password
+- `Login Flow` - การทำงานเมื่อมีการ login
+- `Machine to Machine Flow` - การทำงานก่อน token issued เสร็จ
+- `Pre User Registration Flow` - การทำงานก่อนมีการลงทะเบียน
+- `Post User Registration Flow` - การทำงานเมื่อมีการลงทะเบียน
+- `Post Change Password Flow` - การทำงานเมื่อมีการเปลี่ยนรหัสผ่าน
+- `Send Phone Message Flow` - การทำงานก่อนการส่งข้อความไปยังโทรศัพท์
+- `Password Reset / Post Challenge Flow` - การทำงานเมื่อมีการเปลี่ยนรหัสผ่านหลังจากที่ทำการ reset password

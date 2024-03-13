@@ -13,7 +13,7 @@ export default withMiddlewareAuthRequired(async (req) => {
   }
   // console.log('user', user.accessToken)
   const userPermissionData = jwtDecode(user.accessToken)
-  console.log('userPermissionData', userPermissionData)
+  // console.log('userPermissionData', userPermissionData)
   return res
 })
 
